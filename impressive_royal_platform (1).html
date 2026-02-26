@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Impressive Royal · Nomenclatura</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --gold:        #86764E;
+  --gold-dark:   #5C4F2A;
+  --gold-mid:    #A8956A;
+  --gold-light:  #C9B47A;
+  --gold-cream:  #E8DFC0;
+  --cream:       #F5F0E8;
+  --cream-light: #FDFBF7;
+  --text:        #2C2416;
+  --text-mid:    #6B5E42;
+  --text-dim:    #9E8E6E;
+  --border:      rgba(134,118,78,0.2);
+  --border-mid:  rgba(134,118,78,0.4);
+  --green:       #2E7D32;
+  --red:         #B71C1C;
+  --blue:        #1565C0;
+  --shadow:      0 4px 24px rgba(92,79,42,0.1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Montserrat',sans-serif;background:var(--cream-light);color:var(--text);min-height:100vh;}
+
+/* ── LOGIN ── */
+#login-screen{position:fixed;inset:0;background:var(--cream-light);display:flex;align-items:center;justify-content:center;z-index:1000;flex-direction:column;gap:0;}
+.login-box{background:white;border:1px solid var(--border-mid);border-radius:8px;padding:48px 40px;width:min(420px,92vw);box-shadow:var(--shadow);}
+.login-logo{text-align:center;margin-bottom:32px;}
+.login-logo .shell{font-size:48px;display:block;margin-bottom:8px;}
+.login-logo h1{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:var(--gold);letter-spacing:4px;text-transform:uppercase;}
+.login-logo p{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-top:4px;}
+.login-field{margin-bottom:16px;}
+.login-field label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:6px;}
+.login-field input, .login-field select{width:100%;padding:12px 14px;border:1px solid var(--border-mid);border-radius:4px;font-family:'Montserrat',sans-serif;font-size:13px;background:var(--cream-light);color:var(--text);outline:none;transition:border-color 0.2s;}
+.login-field input:focus, .login-field select:focus{border-color:var(--gold);}
+.login-btn{width:100%;padding:14px;background:var(--gold-dark);color:white;border:none;border-radius:4px;font-family:'Montserrat',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;font-weight:600;cursor:pointer;margin-top:8px;transition:background 0.2s;}
+.login-btn:hover{background:var(--gold);}
+.gold-strip{height:3px;background:linear-gradient(90deg,var(--gold-dark),var(--gold-light),var(--gold-cream),var(--gold-light),var(--gold-dark));margin-bottom:0;}
+
+/* ── APP ── */
+#app{display:none;}
+header{background:white;border-bottom:1px solid var(--border-mid);padding:0 24px;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(134,118,78,0.08);}
+.header-inner{display:flex;align-items:center;justify-content:space-between;height:60px;gap:16px;}
+.header-brand{display:flex;align-items:center;gap:12px;}
+.brand-text{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:var(--gold);letter-spacing:3px;text-transform:uppercase;}
+.brand-sub{font-size:7px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);}
+.header-divider{width:1px;height:32px;background:var(--border-mid);}
+.header-user{display:flex;align-items:center;gap:8px;}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:var(--gold-cream);border:2px solid var(--gold-light);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--gold-dark);}
+.user-name{font-size:11px;font-weight:600;color:var(--text);}
+.user-rol{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);}
+.header-strip{height:3px;background:linear-gradient(90deg,var(--gold-dark),var(--gold-light),var(--gold-cream),var(--gold-light),var(--gold-dark));}
+
+/* ── NAV ── */
+nav.main-nav{background:white;border-bottom:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;}
+nav.main-nav::-webkit-scrollbar{display:none;}
+.nav-tab{flex-shrink:0;padding:14px 20px;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;font-weight:500;white-space:nowrap;}
+.nav-tab.active{color:var(--gold-dark);border-bottom-color:var(--gold);}
+.nav-tab:hover{color:var(--gold);}
+
+/* ── MAIN ── */
+main{padding:24px;max-width:1400px;margin:0 auto;}
+.panel{display:none;}
+.panel.active{display:block;animation:fadeIn 0.3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SECTION TITLE ── */
+.section-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;letter-spacing:4px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:4px;}
+.section-line{width:40px;height:2px;background:linear-gradient(90deg,var(--gold),transparent);margin-bottom:20px;}
+
+/* ── PROPUESTAS GRID ── */
+.propuestas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;}
+.propuesta-card{background:white;border:1px solid var(--border);border-radius:6px;overflow:hidden;box-shadow:var(--shadow);transition:transform 0.2s,box-shadow 0.2s;}
+.propuesta-card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(92,79,42,0.14);}
+.propuesta-card.descartada{opacity:0.45;filter:grayscale(0.6);}
+.propuesta-card.ganadora{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold-light),var(--shadow);}
+.card-header{padding:18px 20px 14px;border-bottom:1px solid var(--border);}
+.card-estado{display:inline-flex;align-items:center;gap:5px;font-size:7px;letter-spacing:2px;text-transform:uppercase;padding:3px 8px;border-radius:2px;margin-bottom:10px;font-weight:600;}
+.estado-activa{background:var(--cream);color:var(--text-dim);}
+.estado-favorita{background:#FFF9C4;color:#F57F17;}
+.estado-ganadora{background:var(--gold-cream);color:var(--gold-dark);}
+.estado-descartada{background:#FFEBEE;color:var(--red);}
+.card-titulo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.card-tema{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);}
+.card-alas{padding:14px 20px;display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--border);}
+.ala-chip{font-size:10px;font-weight:700;padding:4px 10px;border-radius:2px;background:var(--cream);color:var(--text);border:1px solid var(--border);letter-spacing:1px;}
+.ala-chip.identico{background:var(--gold-cream);color:var(--gold-dark);border-color:var(--gold-light);}
+.card-stats{padding:12px 20px;display:flex;gap:16px;border-bottom:1px solid var(--border);}
+.stat-item{text-align:center;}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold);line-height:1;}
+.stat-lbl{font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-top:2px;}
+.stars-row{display:flex;gap:4px;align-items:center;margin-top:6px;}
+.star{font-size:16px;cursor:pointer;color:#DDD;transition:color 0.15s;}
+.star.lit{color:#F4B400;}
+.card-actions{padding:12px 20px;display:flex;gap:8px;flex-wrap:wrap;}
+.btn{padding:7px 14px;font-size:8px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border-mid);border-radius:3px;cursor:pointer;font-family:'Montserrat',sans-serif;font-weight:600;transition:all 0.15s;background:white;color:var(--text-mid);}
+.btn:hover{border-color:var(--gold);color:var(--gold-dark);}
+.btn-gold{background:var(--gold-dark);color:white;border-color:var(--gold-dark);}
+.btn-gold:hover{background:var(--gold);}
+.btn-fav{background:#FFF9C4;color:#F57F17;border-color:#FFE082;}
+.btn-fav:hover{background:#FFE082;}
+.btn-win{background:var(--gold-cream);color:var(--gold-dark);border-color:var(--gold-light);}
+.btn-discard{background:#FFEBEE;color:var(--red);border-color:#FFCDD2;}
+.btn-restore{background:var(--cream);color:var(--text-mid);}
+
+/* ── PROS/CONTRAS ── */
+.pros-contras{padding:14px 20px;border-bottom:1px solid var(--border);}
+.pc-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;}
+.pc-col h4{font-size:8px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
+.pc-col.pros h4{color:var(--green);}
+.pc-col.contras h4{color:var(--red);}
+.pc-item{display:flex;align-items:flex-start;gap:6px;font-size:10px;color:var(--text-mid);line-height:1.5;margin-bottom:5px;padding:5px 8px;border-radius:3px;}
+.pc-item.pro{background:#F1F8E9;}
+.pc-item.contra{background:#FFEBEE;}
+.pc-dot{flex-shrink:0;width:6px;height:6px;border-radius:50%;margin-top:4px;}
+.pc-item.pro .pc-dot{background:var(--green);}
+.pc-item.contra .pc-dot{background:var(--red);}
+.pc-del{margin-left:auto;cursor:pointer;color:var(--text-dim);font-size:12px;opacity:0.5;}
+.pc-del:hover{opacity:1;}
+.add-pc{display:flex;gap:6px;margin-top:8px;}
+.add-pc input{flex:1;padding:6px 10px;border:1px solid var(--border-mid);border-radius:3px;font-family:'Montserrat',sans-serif;font-size:11px;background:var(--cream-light);outline:none;}
+.add-pc input:focus{border-color:var(--gold);}
+.add-pc .btn{padding:6px 10px;font-size:8px;}
+
+/* ── COMENTARIOS ── */
+.comentarios-section{padding:14px 20px;}
+.comentario-item{padding:10px 14px;border-left:3px solid var(--border-mid);background:var(--cream-light);border-radius:0 4px 4px 0;margin-bottom:8px;}
+.comentario-item.decision{border-left-color:var(--gold);background:var(--gold-cream);}
+.comentario-item.sugerencia{border-left-color:var(--blue);background:#E3F2FD;}
+.comentario-item.pregunta{border-left-color:#9C27B0;background:#F3E5F5;}
+.comentario-header{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.com-avatar{width:22px;height:22px;border-radius:50%;background:var(--gold-cream);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--gold-dark);flex-shrink:0;}
+.com-user{font-size:10px;font-weight:600;color:var(--text);}
+.com-rol{font-size:8px;color:var(--text-dim);letter-spacing:1px;}
+.com-time{font-size:8px;color:var(--text-dim);margin-left:auto;}
+.com-tipo{font-size:7px;padding:2px 6px;border-radius:2px;letter-spacing:1px;text-transform:uppercase;font-weight:600;}
+.tipo-comentario{background:var(--cream);color:var(--text-dim);}
+.tipo-decision{background:var(--gold-cream);color:var(--gold-dark);}
+.tipo-sugerencia{background:#E3F2FD;color:var(--blue);}
+.tipo-pregunta{background:#F3E5F5;color:#9C27B0;}
+.com-texto{font-size:11px;color:var(--text);line-height:1.6;margin-bottom:6px;}
+.com-reply-btn{font-size:8px;color:var(--text-dim);cursor:pointer;letter-spacing:1px;text-transform:uppercase;}
+.com-reply-btn:hover{color:var(--gold);}
+.reply-indent{margin-left:20px;margin-top:6px;}
+.add-comment{display:flex;flex-direction:column;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+.add-comment-row{display:flex;gap:8px;}
+.add-comment textarea{flex:1;padding:10px 12px;border:1px solid var(--border-mid);border-radius:4px;font-family:'Montserrat',sans-serif;font-size:11px;background:var(--cream-light);resize:vertical;min-height:60px;outline:none;color:var(--text);}
+.add-comment textarea:focus{border-color:var(--gold);}
+.add-comment select{padding:8px 10px;border:1px solid var(--border-mid);border-radius:4px;font-family:'Montserrat',sans-serif;font-size:10px;background:var(--cream-light);color:var(--text);outline:none;}
+
+/* ── DETALLE ── */
+.detalle-overlay{display:none;position:fixed;inset:0;background:rgba(44,36,22,0.6);z-index:200;overflow-y:auto;padding:24px;}
+.detalle-overlay.open{display:flex;align-items:flex-start;justify-content:center;}
+.detalle-box{background:white;border-radius:8px;width:min(780px,100%);max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);}
+.detalle-header{padding:20px 24px;border-bottom:1px solid var(--border-mid);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:white;z-index:10;}
+.detalle-close{cursor:pointer;font-size:20px;color:var(--text-dim);padding:4px;}
+.detalle-close:hover{color:var(--text);}
+.detalle-content{padding:24px;}
+
+/* ── VOTACIÓN ── */
+.votacion-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.voto-card{background:white;border:1px solid var(--border);border-radius:6px;padding:20px;box-shadow:var(--shadow);}
+.voto-titulo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--gold-dark);margin-bottom:12px;}
+.voto-avg{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--gold);line-height:1;}
+.voto-count{font-size:9px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+.voto-bar{height:4px;background:var(--cream);border-radius:2px;margin:12px 0;}
+.voto-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold-light));border-radius:2px;transition:width 0.5s;}
+.my-voto{font-size:9px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.voters-list{font-size:9px;color:var(--text-dim);margin-top:8px;line-height:1.8;}
+
+/* ── HISTORIAL ── */
+.historial-list{display:flex;flex-direction:column;gap:0;}
+.hist-item{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--border);}
+.hist-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.hist-body{flex:1;}
+.hist-tipo{font-size:8px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:3px;}
+.hist-desc{font-size:11px;color:var(--text);line-height:1.5;}
+.hist-meta{font-size:9px;color:var(--text-dim);margin-top:3px;}
+
+/* ── CHAT ── */
+.chat-container{display:grid;grid-template-columns:1fr;gap:0;height:calc(100vh - 200px);min-height:500px;background:white;border:1px solid var(--border);border-radius:6px;overflow:hidden;box-shadow:var(--shadow);}
+.chat-header{padding:16px 20px;border-bottom:1px solid var(--border);background:var(--cream-light);display:flex;align-items:center;gap:10px;}
+.chat-online{width:8px;height:8px;border-radius:50%;background:#4CAF50;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;min-height:0;height:calc(100% - 120px);}
+.chat-msg{display:flex;gap:10px;align-items:flex-start;}
+.chat-msg.mine{flex-direction:row-reverse;}
+.chat-bubble{max-width:72%;padding:10px 14px;border-radius:12px;font-size:12px;line-height:1.5;color:var(--text);}
+.chat-msg.mine .chat-bubble{background:var(--gold-cream);border-bottom-right-radius:3px;color:var(--gold-dark);}
+.chat-msg:not(.mine) .chat-bubble{background:var(--cream-light);border-bottom-left-radius:3px;}
+.chat-user-tag{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gold);display:block;margin-bottom:3px;}
+.chat-time{font-size:8px;color:var(--text-dim);margin-top:3px;}
+.chat-input-row{padding:14px 16px;border-top:1px solid var(--border);display:flex;gap:10px;background:white;}
+.chat-input{flex:1;padding:10px 14px;border:1px solid var(--border-mid);border-radius:20px;font-family:'Montserrat',sans-serif;font-size:12px;background:var(--cream-light);outline:none;color:var(--text);}
+.chat-input:focus{border-color:var(--gold);}
+.chat-send{padding:10px 16px;background:var(--gold-dark);color:white;border:none;border-radius:20px;cursor:pointer;font-size:14px;transition:background 0.2s;}
+.chat-send:hover{background:var(--gold);}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;background:var(--gold-dark);color:white;border-radius:4px;font-size:11px;letter-spacing:1px;z-index:999;opacity:0;transition:opacity 0.3s;pointer-events:none;}
+.toast.show{opacity:1;}
+
+/* ── LOADING ── */
+.loading{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--text-dim);font-size:11px;letter-spacing:2px;text-transform:uppercase;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  main{padding:12px;}
+  .propuestas-grid{grid-template-columns:1fr;}
+  .pc-cols{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <span class="shell">🐚</span>
+      <h1>Impressive Royal</h1>
+      <p>Plataforma de Nomenclatura · Punta Cana</p>
+    </div>
+    <div class="login-field">
+      <label>Contraseña de acceso</label>
+      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter')document.getElementById('login-nombre').focus()">
+      <div id="pass-error" style="color:#B71C1C;font-size:9px;letter-spacing:1px;margin-top:5px;display:none">
+        ✗ Contraseña incorrecta
+      </div>
+    </div>
+    <div class="login-field">
+      <label>Tu nombre</label>
+      <input type="text" id="login-nombre" placeholder="Ej: Santiago García" autocomplete="name"
+        onkeydown="if(event.key==='Enter')document.getElementById('login-rol').focus()">
+    </div>
+    <div class="login-field">
+      <label>Rol</label>
+      <select id="login-rol">
+        <option value="sistemas">Dirección de Sistemas</option>
+        <option value="operaciones">Operaciones</option>
+        <option value="direccion">Dirección General</option>
+        <option value="propiedad">Propiedad</option>
+        <option value="equipo">Equipo</option>
+      </select>
+    </div>
+    <button class="login-btn" onclick="login()">Acceder a la plataforma</button>
+  </div>
+  <div class="gold-strip" style="width:min(420px,92vw);"></div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <div class="header-inner">
+      <div class="header-brand">
+        <span style="font-size:24px">🐚</span>
+        <div>
+          <div class="brand-text">Impressive Royal</div>
+          <div class="brand-sub">Sistema de Nomenclatura · Punta Cana · 275 habitaciones</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px">
+        <div style="display:flex;flex-direction:column;align-items:flex-end">
+          <div id="header-user-name" class="user-name"></div>
+          <div id="header-user-rol" class="user-rol"></div>
+        </div>
+        <div id="header-avatar" class="user-avatar"></div>
+        <button class="btn" onclick="logout()" style="font-size:8px">Salir</button>
+      </div>
+    </div>
+    <div class="header-strip"></div>
+  </header>
+
+  <nav class="main-nav">
+    <div class="nav-tab active" onclick="showPanel('propuestas',this)">📋 Propuestas</div>
+    <div class="nav-tab" onclick="showPanel('votacion',this)">⭐ Votación</div>
+    <div class="nav-tab" onclick="showPanel('historial',this)">📜 Historial</div>
+    <div class="nav-tab" onclick="showPanel('chat',this)">💬 Chat equipo</div>
+  </nav>
+
+  <main>
+
+    <!-- PROPUESTAS -->
+    <div class="panel active" id="panel-propuestas">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+        <div>
+          <div class="section-title">Propuestas</div>
+          <div class="section-line"></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <select id="filtro-estado" onchange="renderPropuestas()" style="padding:8px 12px;border:1px solid var(--border-mid);border-radius:3px;font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:1px;background:var(--cream-light);color:var(--text);outline:none;">
+            <option value="todas">Todas</option>
+            <option value="activa">Activas</option>
+            <option value="favorita">Favoritas</option>
+            <option value="descartada">Descartadas</option>
+          </select>
+        </div>
+      </div>
+      <div class="propuestas-grid" id="propuestas-grid">
+        <div class="loading">Cargando propuestas…</div>
+      </div>
+    </div>
+
+    <!-- VOTACIÓN -->
+    <div class="panel" id="panel-votacion">
+      <div class="section-title">Votación</div>
+      <div class="section-line"></div>
+      <p style="font-size:11px;color:var(--text-dim);margin-bottom:20px;">Puntúa cada propuesta del 1 al 5. Un voto por persona.</p>
+      <div class="votacion-grid" id="votacion-grid">
+        <div class="loading">Cargando…</div>
+      </div>
+    </div>
+
+    <!-- HISTORIAL -->
+    <div class="panel" id="panel-historial">
+      <div class="section-title">Historial de Decisiones</div>
+      <div class="section-line"></div>
+      <div class="historial-list" id="historial-list">
+        <div class="loading">Cargando…</div>
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="panel" id="panel-chat">
+      <div class="section-title">Chat del Equipo</div>
+      <div class="section-line"></div>
+      <div class="chat-container" style="display:flex;flex-direction:column;">
+        <div class="chat-header">
+          <div class="chat-online"></div>
+          <span style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-mid);">Canal Nomenclatura · Tiempo real</span>
+        </div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="chat-input" placeholder="Escribe un mensaje…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){sendChat();event.preventDefault();}">
+          <button class="chat-send" onclick="sendChat()">➤</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- DETALLE OVERLAY -->
+<div class="detalle-overlay" id="detalle-overlay" onclick="if(event.target===this)closeDetalle()">
+  <div class="detalle-box" id="detalle-box"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://jhauftsbaikkfwcdrmgz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpoYXVmdHNiYWlra2Z3Y2RybWd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMTI3NTIsImV4cCI6MjA4NzU4ODc1Mn0.Z7pfeP4eMwEhSHI6L-ofS15WfjFVl_bh9JoVjYPEyEU';
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let USER = null;
+let PROPUESTAS_DATA = [];
+let CHAT_CHANNEL = null;
+let REALTIME_CHANNEL = null;
+
+// ── UTILS ──────────────────────────────────────────────────
+function toast(msg, dur=2500){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), dur);
+}
+
+function timeAgo(ts){
+  const d=new Date(ts), now=new Date();
+  const diff=Math.floor((now-d)/1000);
+  if(diff<60) return 'ahora';
+  if(diff<3600) return Math.floor(diff/60)+'m';
+  if(diff<86400) return Math.floor(diff/3600)+'h';
+  return d.toLocaleDateString('es-ES',{day:'2-digit',month:'short'});
+}
+
+function rolLabel(rol){
+  const map={sistemas:'Sistemas',operaciones:'Operaciones',direccion:'Dirección',propiedad:'Propiedad',equipo:'Equipo'};
+  return map[rol]||rol;
+}
+
+function estadoBadge(estado){
+  const map={activa:['activa','estado-activa'],favorita:['⭐ Favorita','estado-favorita'],ganadora:['🏆 Ganadora','estado-ganadora'],descartada:['✗ Descartada','estado-descartada']};
+  const [txt,cls]=map[estado]||['activa','estado-activa'];
+  return `<span class="card-estado ${cls}">${txt}</span>`;
+}
+
+// ── LOGIN ──────────────────────────────────────────────────
+// Password: change this to your own before sharing
+const ACCESS_PASSWORD = 'Royal2025';
+
+function login(){
+  const pass  = document.getElementById('login-pass').value;
+  const nombre= document.getElementById('login-nombre').value.trim();
+  const rol   = document.getElementById('login-rol').value;
+
+  // Check password
+  if(pass !== ACCESS_PASSWORD){
+    const errEl = document.getElementById('pass-error');
+    errEl.style.display = 'block';
+    document.getElementById('login-pass').style.borderColor = '#B71C1C';
+    document.getElementById('login-pass').focus();
+    return;
+  }
+  if(!nombre){
+    alert('Por favor introduce tu nombre');
+    document.getElementById('login-nombre').focus();
+    return;
+  }
+
+  document.getElementById('pass-error').style.display='none';
+  USER={nombre, rol, inicial: nombre.charAt(0).toUpperCase()};
+  localStorage.setItem('ir_user', JSON.stringify(USER));
+  // Don't save password in localStorage
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('header-user-name').textContent=USER.nombre;
+  document.getElementById('header-user-rol').textContent=rolLabel(USER.rol);
+  document.getElementById('header-avatar').textContent=USER.inicial;
+  initApp();
+}
+
+function logout(){
+  localStorage.removeItem('ir_user');
+  location.reload();
+}
+
+// ── INIT ──────────────────────────────────────────────────
+async function initApp(){
+  await loadPropuestas();
+  setupRealtime();
+}
+
+function setupRealtime(){
+  REALTIME_CHANNEL = sb.channel('ir-realtime')
+    .on('postgres_changes',{event:'*',schema:'public',table:'propuestas'},()=>loadPropuestas())
+    .on('postgres_changes',{event:'*',schema:'public',table:'votos'},()=>{ loadVotacion(); loadPropuestas(); })
+    .on('postgres_changes',{event:'*',schema:'public',table:'comentarios'},()=>loadPropuestas())
+    .on('postgres_changes',{event:'*',schema:'public',table:'pros_contras'},()=>loadPropuestas())
+    .on('postgres_changes',{event:'*',schema:'public',table:'decisiones'},()=>loadHistorial())
+    .subscribe();
+
+  CHAT_CHANNEL = sb.channel('ir-chat')
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'chat'},(payload)=>appendChatMsg(payload.new))
+    .subscribe();
+}
+
+// ── NAVIGATION ─────────────────────────────────────────────
+function showPanel(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  if(id==='votacion') loadVotacion();
+  if(id==='historial') loadHistorial();
+  if(id==='chat') loadChat();
+}
+
+// ── PROPUESTAS ─────────────────────────────────────────────
+async function loadPropuestas(){
+  const {data:props} = await sb.from('propuestas').select('*').order('orden');
+  const {data:alas}  = await sb.from('alas').select('*').order('orden');
+  const {data:pcs}   = await sb.from('pros_contras').select('*').order('created_at');
+  const {data:votos} = await sb.from('votos').select('*');
+  const {data:coms}  = await sb.from('comentarios').select('*').order('created_at');
+
+  PROPUESTAS_DATA = (props||[]).map(p=>({
+    ...p,
+    alas:    (alas||[]).filter(a=>a.propuesta_id===p.id),
+    pros:    (pcs||[]).filter(x=>x.propuesta_id===p.id&&x.tipo==='pro'),
+    contras: (pcs||[]).filter(x=>x.propuesta_id===p.id&&x.tipo==='contra'),
+    votos:   (votos||[]).filter(v=>v.propuesta_id===p.id),
+    comentarios: (coms||[]).filter(c=>c.propuesta_id===p.id),
+  }));
+
+  renderPropuestas();
+}
+
+function renderPropuestas(){
+  const filtro = document.getElementById('filtro-estado')?.value||'todas';
+  const grid = document.getElementById('propuestas-grid');
+  let data = PROPUESTAS_DATA;
+  if(filtro!=='todas') data=data.filter(p=>p.estado===filtro);
+  if(!data.length){grid.innerHTML='<div class="loading">No hay propuestas con este filtro</div>';return;}
+  grid.innerHTML = data.map(p=>renderPropuestaCard(p)).join('');
+}
+
+function renderPropuestaCard(p){
+  const avgVoto = p.votos.length ? (p.votos.reduce((a,v)=>a+v.puntuacion,0)/p.votos.length).toFixed(1) : '—';
+  const miVoto  = p.votos.find(v=>v.usuario===USER.nombre);
+  const stars   = [1,2,3,4,5].map(s=>`<span class="star ${miVoto&&miVoto.puntuacion>=s?'lit':''}" onclick="votar('${p.id}',${s})">★</span>`).join('');
+
+  const alaChips = p.alas.map(a=>`<span class="ala-chip ${a.identidad==='identico'?'identico':''}">${a.nombre}</span>`).join('');
+  const prosHtml = p.pros.slice(0,3).map(x=>`<div class="pc-item pro"><div class="pc-dot"></div><span>${x.texto}</span><span class="pc-del" onclick="delPC('${x.id}','${p.id}')">×</span></div>`).join('');
+  const consHtml = p.contras.slice(0,3).map(x=>`<div class="pc-item contra"><div class="pc-dot"></div><span>${x.texto}</span><span class="pc-del" onclick="delPC('${x.id}','${p.id}')">×</span></div>`).join('');
+  const comCount = p.comentarios.length;
+  const lastCom  = p.comentarios.at(-1);
+
+  const actionBtns = p.estado==='descartada'
+    ? `<button class="btn btn-restore" onclick="cambiarEstado('${p.id}','activa','Propuesta reactivada')">↩ Reactivar</button>`
+    : `<button class="btn btn-fav" onclick="cambiarEstado('${p.id}','favorita','Marcada como favorita')">⭐ Favorita</button>
+       <button class="btn btn-win" onclick="cambiarEstado('${p.id}','ganadora','Seleccionada como GANADORA')">🏆 Ganadora</button>
+       <button class="btn btn-discard" onclick="cambiarEstado('${p.id}','descartada','Propuesta descartada')">✗ Descartar</button>`;
+
+  return `
+  <div class="propuesta-card ${p.estado}" id="card-${p.id}">
+    <div class="card-header">
+      ${estadoBadge(p.estado)}
+      <div class="card-titulo">${p.nombre}</div>
+      <div class="card-tema">${p.tema||''}</div>
+    </div>
+    <div class="card-alas">${alaChips}</div>
+    <div class="pros-contras">
+      <div style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px">Pros &amp; Contras</div>
+      <div class="pc-cols">
+        <div class="pc-col pros">
+          <h4>✓ Ventajas</h4>
+          ${prosHtml||'<span style="font-size:9px;color:var(--text-dim)">Sin pros añadidos</span>'}
+          <div class="add-pc">
+            <input id="pro-input-${p.id}" placeholder="Añadir ventaja…" onkeydown="if(event.key==='Enter')addPC('${p.id}','pro')">
+            <button class="btn" onclick="addPC('${p.id}','pro')">+</button>
+          </div>
+        </div>
+        <div class="pc-col contras">
+          <h4>✗ Inconvenientes</h4>
+          ${consHtml||'<span style="font-size:9px;color:var(--text-dim)">Sin contras añadidos</span>'}
+          <div class="add-pc">
+            <input id="contra-input-${p.id}" placeholder="Añadir inconveniente…" onkeydown="if(event.key==='Enter')addPC('${p.id}','contra')">
+            <button class="btn" onclick="addPC('${p.id}','contra')">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-stats">
+      <div class="stat-item">
+        <div class="stat-num">${avgVoto}</div>
+        <div class="stars-row">${stars}</div>
+        <div class="stat-lbl">${p.votos.length} votos</div>
+      </div>
+      <div style="width:1px;background:var(--border);margin:0 4px;"></div>
+      <div class="stat-item">
+        <div class="stat-num">${comCount}</div>
+        <div class="stat-lbl">Comentarios</div>
+      </div>
+      <div style="width:1px;background:var(--border);margin:0 4px;"></div>
+      <div class="stat-item">
+        <div class="stat-num">${p.alas.length}</div>
+        <div class="stat-lbl">Alas</div>
+      </div>
+    </div>
+    <div class="comentarios-section">
+      <div style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px">Comentarios recientes</div>
+      ${lastCom ? `<div class="comentario-item ${lastCom.tipo}">
+        <div class="comentario-header">
+          <div class="com-avatar">${lastCom.usuario.charAt(0)}</div>
+          <span class="com-user">${lastCom.usuario}</span>
+          <span class="com-rol">${rolLabel(lastCom.rol)}</span>
+          <span class="com-time">${timeAgo(lastCom.created_at)}</span>
+          <span class="com-tipo tipo-${lastCom.tipo}">${lastCom.tipo}</span>
+        </div>
+        <div class="com-texto">${lastCom.texto}</div>
+      </div>` : '<span style="font-size:9px;color:var(--text-dim)">Sin comentarios aún</span>'}
+      <div style="margin-top:10px;">
+        <button class="btn" onclick="openDetalle('${p.id}')">Ver todos (${comCount}) · Comentar</button>
+      </div>
+      <div class="add-comment" style="margin-top:10px;">
+        <div class="add-comment-row">
+          <textarea id="com-input-${p.id}" placeholder="Añadir comentario rápido…" rows="2"></textarea>
+          <select id="com-tipo-${p.id}" style="padding:8px 10px;border:1px solid var(--border-mid);border-radius:4px;font-family:'Montserrat',sans-serif;font-size:9px;background:var(--cream-light);color:var(--text);outline:none;height:fit-content;margin-top:auto;">
+            <option value="comentario">💬 Comentario</option>
+            <option value="sugerencia">💡 Sugerencia</option>
+            <option value="pregunta">❓ Pregunta</option>
+            <option value="decision">⚖️ Decisión</option>
+          </select>
+        </div>
+        <button class="btn btn-gold" onclick="addComentario('${p.id}')">Enviar comentario</button>
+      </div>
+    </div>
+    <div class="card-actions">
+      ${actionBtns}
+    </div>
+  </div>`;
+}
+
+// ── PROS/CONTRAS ──────────────────────────────────────────
+async function addPC(propuestaId, tipo){
+  const input = document.getElementById(`${tipo}-input-${propuestaId}`);
+  const texto = input.value.trim();
+  if(!texto) return;
+  await sb.from('pros_contras').insert({propuesta_id:propuestaId, tipo, texto, autor:USER.nombre});
+  input.value='';
+  toast(tipo==='pro'?'✓ Ventaja añadida':'✗ Inconveniente añadido');
+  await loadPropuestas();
+}
+
+async function delPC(id, propuestaId){
+  await sb.from('pros_contras').delete().eq('id',id);
+  await loadPropuestas();
+}
+
+// ── COMENTARIOS ───────────────────────────────────────────
+async function addComentario(propuestaId){
+  const texto = document.getElementById(`com-input-${propuestaId}`).value.trim();
+  const tipo  = document.getElementById(`com-tipo-${propuestaId}`).value;
+  if(!texto) return;
+  await sb.from('comentarios').insert({propuesta_id:propuestaId, usuario:USER.nombre, rol:USER.rol, texto, tipo});
+  document.getElementById(`com-input-${propuestaId}`).value='';
+  toast('💬 Comentario añadido');
+  await loadPropuestas();
+}
+
+// ── DETALLE ───────────────────────────────────────────────
+async function openDetalle(propuestaId){
+  const p = PROPUESTAS_DATA.find(x=>x.id===propuestaId);
+  if(!p) return;
+  const {data:coms} = await sb.from('comentarios').select('*').eq('propuesta_id',propuestaId).order('created_at');
+  const topLevel = (coms||[]).filter(c=>!c.parent_id);
+  const replies  = (coms||[]).filter(c=>c.parent_id);
+
+  function renderCom(c, indent=false){
+    const reps = replies.filter(r=>r.parent_id===c.id);
+    return `<div class="comentario-item ${c.tipo} ${indent?'reply-indent':''}">
+      <div class="comentario-header">
+        <div class="com-avatar">${c.usuario.charAt(0)}</div>
+        <span class="com-user">${c.usuario}</span>
+        <span class="com-rol">${rolLabel(c.rol)}</span>
+        <span class="com-time">${timeAgo(c.created_at)}</span>
+        <span class="com-tipo tipo-${c.tipo}">${c.tipo}</span>
+      </div>
+      <div class="com-texto">${c.texto}</div>
+      <span class="com-reply-btn" onclick="showReplyBox('${c.id}','${propuestaId}')">↩ Responder</span>
+      <div id="reply-box-${c.id}"></div>
+      ${reps.map(r=>renderCom(r,true)).join('')}
+    </div>`;
+  }
+
+  const html = `
+  <div class="detalle-header">
+    <div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-dark)">${p.nombre}</div>
+      <div style="font-size:9px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-top:2px">${p.tema} · ${coms?.length||0} comentarios</div>
+    </div>
+    <span class="detalle-close" onclick="closeDetalle()">✕</span>
+  </div>
+  <div class="detalle-content">
+    <div style="margin-bottom:20px">
+      ${topLevel.length ? topLevel.map(c=>renderCom(c)).join('') : '<div style="font-size:11px;color:var(--text-dim);padding:20px;text-align:center">Sin comentarios. Sé el primero.</div>'}
+    </div>
+    <div class="add-comment" style="border-top:2px solid var(--border-mid);padding-top:16px">
+      <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px">Nuevo comentario</div>
+      <textarea id="detalle-com-texto" placeholder="Escribe tu comentario…" rows="3" style="width:100%;padding:10px 12px;border:1px solid var(--border-mid);border-radius:4px;font-family:'Montserrat',sans-serif;font-size:11px;background:var(--cream-light);resize:vertical;outline:none;color:var(--text);"></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+        <select id="detalle-com-tipo" style="padding:8px 12px;border:1px solid var(--border-mid);border-radius:4px;font-family:'Montserrat',sans-serif;font-size:10px;background:var(--cream-light);outline:none;">
+          <option value="comentario">💬 Comentario</option>
+          <option value="sugerencia">💡 Sugerencia</option>
+          <option value="pregunta">❓ Pregunta</option>
+          <option value="decision">⚖️ Decisión</option>
+        </select>
+        <button class="btn btn-gold" onclick="submitDetalleComment('${propuestaId}')">Enviar</button>
+      </div>
+    </div>
+  </div>`;
+
+  document.getElementById('detalle-box').innerHTML = html;
+  document.getElementById('detalle-overlay').classList.add('open');
+}
+
+function closeDetalle(){ document.getElementById('detalle-overlay').classList.remove('open'); }
+
+function showReplyBox(comId, propuestaId){
+  const box = document.getElementById(`reply-box-${comId}`);
+  if(box.innerHTML) { box.innerHTML=''; return; }
+  box.innerHTML = `<div style="margin-top:8px;display:flex;gap:6px;">
+    <input id="reply-input-${comId}" style="flex:1;padding:7px 10px;border:1px solid var(--border-mid);border-radius:4px;font-size:11px;font-family:'Montserrat',sans-serif;background:var(--cream-light);outline:none;" placeholder="Tu respuesta…">
+    <button class="btn btn-gold" onclick="submitReply('${comId}','${propuestaId}')">↩</button>
+  </div>`;
+}
+
+async function submitReply(parentId, propuestaId){
+  const texto = document.getElementById(`reply-input-${parentId}`).value.trim();
+  if(!texto) return;
+  await sb.from('comentarios').insert({propuesta_id:propuestaId, parent_id:parentId, usuario:USER.nombre, rol:USER.rol, texto, tipo:'comentario'});
+  toast('↩ Respuesta enviada');
+  await loadPropuestas();
+  openDetalle(propuestaId);
+}
+
+async function submitDetalleComment(propuestaId){
+  const texto = document.getElementById('detalle-com-texto').value.trim();
+  const tipo  = document.getElementById('detalle-com-tipo').value;
+  if(!texto) return;
+  await sb.from('comentarios').insert({propuesta_id:propuestaId, usuario:USER.nombre, rol:USER.rol, texto, tipo});
+  toast('💬 Comentario añadido');
+  await loadPropuestas();
+  openDetalle(propuestaId);
+}
+
+// ── VOTAR ─────────────────────────────────────────────────
+async function votar(propuestaId, puntuacion){
+  const existing = PROPUESTAS_DATA.find(p=>p.id===propuestaId)?.votos.find(v=>v.usuario===USER.nombre);
+  if(existing){
+    await sb.from('votos').update({puntuacion}).eq('id',existing.id);
+    toast(`⭐ Voto actualizado a ${puntuacion}`);
+  } else {
+    await sb.from('votos').insert({propuesta_id:propuestaId, usuario:USER.nombre, rol:USER.rol, puntuacion});
+    toast(`⭐ Voto registrado: ${puntuacion}/5`);
+  }
+  await loadPropuestas();
+  loadVotacion();
+}
+
+// ── VOTACIÓN PANEL ────────────────────────────────────────
+async function loadVotacion(){
+  const grid = document.getElementById('votacion-grid');
+  if(!PROPUESTAS_DATA.length){ await loadPropuestas(); }
+  const data = PROPUESTAS_DATA.filter(p=>p.estado!=='descartada');
+  grid.innerHTML = data.map(p=>{
+    const avg = p.votos.length ? p.votos.reduce((a,v)=>a+v.puntuacion,0)/p.votos.length : 0;
+    const pct = (avg/5*100).toFixed(0);
+    const miVoto = p.votos.find(v=>v.usuario===USER.nombre);
+    const stars = [1,2,3,4,5].map(s=>`<span class="star" style="font-size:22px;cursor:pointer;color:${miVoto&&miVoto.puntuacion>=s?'#F4B400':'#DDD'}" onclick="votar('${p.id}',${s})">★</span>`).join('');
+    const votersList = p.votos.map(v=>`${v.usuario}: ${'★'.repeat(v.puntuacion)}${'☆'.repeat(5-v.puntuacion)}`).join('<br>');
+    return `<div class="voto-card">
+      ${estadoBadge(p.estado)}
+      <div class="voto-titulo">${p.nombre}</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:12px 0 4px">
+        <div class="voto-avg">${avg?avg.toFixed(1):'—'}</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--text-dim)">/5</div>
+      </div>
+      <div class="voto-count">${p.votos.length} voto${p.votos.length!==1?'s':''}</div>
+      <div class="voto-bar"><div class="voto-bar-fill" style="width:${pct}%"></div></div>
+      <div class="my-voto">Tu voto</div>
+      <div>${stars}</div>
+      ${votersList?`<div class="voters-list" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border)">${votersList}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ── CAMBIAR ESTADO ────────────────────────────────────────
+async function cambiarEstado(propuestaId, estado, descripcion){
+  await sb.from('propuestas').update({estado, updated_at:new Date().toISOString()}).eq('id',propuestaId);
+  await sb.from('decisiones').insert({propuesta_id:propuestaId, tipo:estado, descripcion, usuario:USER.nombre});
+  toast(descripcion);
+  await loadPropuestas();
+}
+
+// ── HISTORIAL ─────────────────────────────────────────────
+async function loadHistorial(){
+  const {data} = await sb.from('decisiones').select('*, propuestas(nombre)').order('created_at',{ascending:false}).limit(50);
+  const list = document.getElementById('historial-list');
+  if(!data?.length){ list.innerHTML='<div class="loading">Sin historial aún</div>'; return; }
+  const icons = {descartada:'🗑️',favorita:'⭐',ganadora:'🏆',reactivada:'↩',comentario_decision:'⚖️'};
+  const colors = {descartada:'#FFEBEE',favorita:'#FFF9C4',ganadora:GOLD_CREAM,reactivada:'var(--cream)',comentario_decision:GOLD_CREAM};
+  list.innerHTML = data.map(d=>`
+    <div class="hist-item">
+      <div class="hist-icon" style="background:${colors[d.tipo]||'var(--cream)'}">${icons[d.tipo]||'📋'}</div>
+      <div class="hist-body">
+        <div class="hist-tipo" style="color:var(--gold)">${d.tipo.toUpperCase()}</div>
+        <div class="hist-desc">${d.descripcion}</div>
+        ${d.propuestas?`<div class="hist-meta">Propuesta: ${d.propuestas.nombre}</div>`:''}
+        <div class="hist-meta">Por ${d.usuario} · ${timeAgo(d.created_at)}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── CHAT ─────────────────────────────────────────────────
+async function loadChat(){
+  const {data} = await sb.from('chat').select('*').order('created_at',{ascending:true}).limit(100);
+  const msgs = document.getElementById('chat-messages');
+  msgs.innerHTML = '';
+  (data||[]).forEach(m=>appendChatMsg(m, false));
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function appendChatMsg(m, scroll=true){
+  const msgs = document.getElementById('chat-messages');
+  if(!msgs) return;
+  const mine = m.usuario === USER?.nombre;
+  const div = document.createElement('div');
+  div.className = `chat-msg ${mine?'mine':''}`;
+  div.innerHTML = `
+    <div class="com-avatar" style="flex-shrink:0">${m.usuario.charAt(0)}</div>
+    <div>
+      <div class="chat-bubble">
+        ${!mine?`<span class="chat-user-tag">${m.usuario} · ${rolLabel(m.rol)}</span>`:''}
+        ${m.mensaje}
+      </div>
+      <div class="chat-time" style="text-align:${mine?'right':'left'}">${timeAgo(m.created_at)}</div>
+    </div>`;
+  msgs.appendChild(div);
+  if(scroll) msgs.scrollTop = msgs.scrollHeight;
+}
+
+async function sendChat(){
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if(!msg) return;
+  input.value = '';
+  await sb.from('chat').insert({usuario:USER.nombre, rol:USER.rol, mensaje:msg});
+}
+
+// ── INIT ─────────────────────────────────────────────────
+const GOLD_CREAM = '#E8DFC0';
+
+// Auto-login si hay sesión guardada
+window.addEventListener('load', ()=>{
+  const saved = localStorage.getItem('ir_user');
+  if(saved){
+    try {
+      USER = JSON.parse(saved);
+      // Pre-fill name and role but NOT password — user must re-enter it
+      document.getElementById('login-nombre').value = USER.nombre;
+      document.getElementById('login-rol').value = USER.rol;
+      // Focus password field directly
+      document.getElementById('login-pass').focus();
+    } catch(e){}
+  } else {
+    document.getElementById('login-pass').focus();
+  }
+});
+</script>
+</body>
+</html>
