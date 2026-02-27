@@ -203,7 +203,31 @@ main{padding:24px;max-width:1400px;margin:0 auto;}
 .chat-send:hover{background:var(--gold);}
 
 /* ── TOAST ── */
-.toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;background:var(--gold-dark);color:white;border-radius:4px;font-size:11px;letter-spacing:1px;z-index:999;opacity:0;transition:opacity 0.3s;pointer-events:none;}
+/* ── EJEMPLOS NOMENCLATURA ── */
+.ejemplos-section{padding:14px 20px;border-bottom:1px solid var(--border);}
+.ejemplos-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;}
+.codigo-chip{font-family:'Courier New',monospace;font-size:11px;font-weight:700;padding:5px 10px;border-radius:3px;background:var(--gold-cream);color:var(--gold-dark);border:1px solid var(--gold-light);letter-spacing:1px;}
+.codigo-chip.planta1{background:#E8F5E9;color:#2E7D32;border-color:#A5D6A7;}
+.codigo-chip.planta2{background:#E3F2FD;color:#1565C0;border-color:#90CAF9;}
+.codigo-chip.planta3{background:#FFF3E0;color:#E65100;border-color:#FFCC80;}
+.codigo-chip.planta4{background:#F3E5F5;color:#6A1B9A;border-color:#CE93D8;}
+.expandible-toggle{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);cursor:pointer;display:flex;align-items:center;gap:5px;margin-top:8px;font-weight:600;}
+.expandible-toggle:hover{color:var(--gold-dark);}
+.expandible-content{display:none;margin-top:12px;}
+.expandible-content.open{display:block;animation:fadeIn 0.2s ease;}
+.alas-tabla{width:100%;border-collapse:collapse;font-size:10px;margin-top:6px;}
+.alas-tabla th{text-align:left;padding:6px 8px;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);border-bottom:2px solid var(--border-mid);font-weight:600;}
+.alas-tabla td{padding:7px 8px;border-bottom:1px solid var(--border);color:var(--text);}
+.alas-tabla tr:last-child td{border-bottom:none;}
+.alas-tabla tr:hover td{background:var(--cream);}
+.buscador-hab{margin-top:12px;padding:12px;background:var(--cream);border-radius:4px;border:1px solid var(--border);}
+.buscador-hab label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:6px;}
+.buscador-row{display:flex;gap:6px;}
+.buscador-row input{flex:1;padding:8px 10px;border:1px solid var(--border-mid);border-radius:3px;font-family:'Courier New',monospace;font-size:13px;font-weight:700;background:white;outline:none;color:var(--gold-dark);letter-spacing:2px;text-transform:uppercase;}
+.buscador-row input:focus{border-color:var(--gold);}
+.buscador-resultado{margin-top:8px;padding:8px 12px;background:white;border-radius:3px;border:1px solid var(--border-mid);font-size:11px;color:var(--text);min-height:32px;line-height:1.6;}
+
+.toast{position:fixed;.toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;background:var(--gold-dark);color:white;border-radius:4px;font-size:11px;letter-spacing:1px;z-index:999;opacity:0;transition:opacity 0.3s;pointer-events:none;}
 .toast.show{opacity:1;}
 
 /* ── LOADING ── */
@@ -1010,6 +1034,31 @@ function renderPropuestaCard(p){
       <div class="card-tema">${p.tema||''}</div>
     </div>
     <div class="card-alas">${alaChips}</div>
+  <div class="ejemplos-section">
+    <div style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Ejemplos de código</div>
+    <div class="ejemplos-chips">${generarEjemplosChips(p)}</div>
+    <div class="expandible-toggle" onclick="toggleExpandible('exp-${p.id}', this)">
+      <span>▶</span> Ver tabla completa + buscador
+    </div>
+    <div class="expandible-content" id="exp-${p.id}">
+      <table class="alas-tabla">
+        <thead><tr>
+          <th>Ala / Planta</th><th>Ubicación</th><th>Hab.</th><th>Ejemplo P1</th><th>Ejemplo P4</th><th>EN</th>
+        </tr></thead>
+        <tbody>${generarTablaAlas(p)}</tbody>
+      </table>
+      <div class="buscador-hab">
+        <label>🔍 Buscador — escribe un código para descodificarlo</label>
+        <div class="buscador-row">
+          <input type="text" id="buscador-${p.id}" placeholder="${p.alas[0]?p.alas[0].nombre+'-101':'CORAL-101'}"
+            oninput="buscarHabitacion('${p.id}', this.value)" maxlength="20">
+        </div>
+        <div class="buscador-resultado" id="resultado-${p.id}">
+          Escribe un código de habitación para ver qué ala, planta y número corresponde…
+        </div>
+      </div>
+    </div>
+  </div>
     <div class="pros-contras">
       <div style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px">Pros &amp; Contras</div>
       <div class="pc-cols">
@@ -1301,6 +1350,150 @@ async function sendChat(){
 
 // ── INIT ─────────────────────────────────────────────────
 const GOLD_CREAM = '#E8DFC0';
+
+// Genera 3-4 chips de ejemplo para una propuesta
+function generarEjemplosChips(p){
+  if(!p.alas || !p.alas.length) return '<span style="font-size:9px;color:var(--text-dim)">Sin alas definidas</span>';
+  const plantas = ['planta1','planta2','planta3','planta4'];
+  let chips = '';
+
+  // Detectar si es por plantas (4 alas = 4 plantas) o por alas (7 alas)
+  const esPorPlantas = p.alas.length <= 4 && p.alas.every(a=> a.ubicacion && a.ubicacion.includes('Planta'));
+
+  if(esPorPlantas){
+    // Formato MANGO-101, COCO-201, IGUANA-301, PAPAYA-401
+    p.alas.slice(0,4).forEach((ala, i)=>{
+      const planta = i+1;
+      const hab = `${planta}01`;
+      chips += `<span class="codigo-chip ${plantas[i]}">${ala.nombre}-${hab}</span>`;
+    });
+    // Añadir uno del final
+    if(p.alas[0]){
+      chips += `<span class="codigo-chip planta1">${p.alas[0].nombre}-162</span>`;
+    }
+  } else {
+    // Formato CORAL-101, CORAL-212, MARINA-301, FLORA-412
+    const aleatorias = p.alas.slice(0,3);
+    const ejemploNums = ['101','212','374','401'];
+    aleatorias.forEach((ala, i)=>{
+      chips += `<span class="codigo-chip ${plantas[i%4]}">${ala.nombre}-${ejemploNums[i]}</span>`;
+    });
+    // Uno más de otra ala
+    if(p.alas[3]){
+      chips += `<span class="codigo-chip ${plantas[3]}">${p.alas[3].nombre}-${ejemploNums[3]}</span>`;
+    }
+  }
+  return chips;
+}
+
+// Genera filas de tabla con todas las alas
+function generarTablaAlas(p){
+  if(!p.alas || !p.alas.length) return '<tr><td colspan="6" style="color:var(--text-dim);text-align:center;padding:12px">Sin alas</td></tr>';
+  const esPorPlantas = p.alas.length <= 4 && p.alas.every(a=> a.ubicacion && a.ubicacion.includes('Planta'));
+
+  return p.alas.map((ala, i)=>{
+    let ejP1, ejP4;
+    if(esPorPlantas){
+      const planta = i+1;
+      ejP1 = `${ala.nombre}-${planta}01`;
+      ejP4 = `${ala.nombre}-${planta}${String(ala.habitaciones).padStart(2,'0').slice(-2)}`;
+    } else {
+      ejP1 = `${ala.nombre}-101`;
+      ejP4 = `${ala.nombre}-412`;
+    }
+    const id_badge = ala.identidad==='identico'
+      ? '<span style="color:#2E7D32;font-size:9px;">✅ Idéntico</span>'
+      : '<span style="color:#F57F17;font-size:9px;">≈ Similar</span>';
+    return `<tr>
+      <td><strong style="color:var(--gold-dark);letter-spacing:1px">${ala.nombre}</strong></td>
+      <td style="color:var(--text-dim)">${ala.ubicacion||''}</td>
+      <td style="font-weight:700;color:var(--gold)">${ala.habitaciones}</td>
+      <td><span class="codigo-chip" style="font-size:9px;padding:3px 7px">${ejP1}</span></td>
+      <td><span class="codigo-chip" style="font-size:9px;padding:3px 7px">${ejP4}</span></td>
+      <td>${id_badge}<br><span style="font-size:8px;color:var(--text-dim)">${ala.nombre_en||ala.nombre}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// Toggle expandible
+function toggleExpandible(id, btn){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const isOpen = el.classList.toggle('open');
+  btn.querySelector('span').textContent = isOpen ? '▼' : '▶';
+}
+
+// Buscador de habitación
+function buscarHabitacion(propuestaId, codigo){
+  const res = document.getElementById(`resultado-${propuestaId}`);
+  if(!res) return;
+  const p = PROPUESTAS_DATA.find(x=>x.id===propuestaId);
+  if(!p || !codigo.trim()){
+    res.innerHTML = 'Escribe un código de habitación para ver qué ala, planta y número corresponde…';
+    return;
+  }
+
+  const cod = codigo.trim().toUpperCase();
+  const esPorPlantas = p.alas.length <= 4 && p.alas.every(a=> a.ubicacion && a.ubicacion.includes('Planta'));
+
+  // Buscar el ala que coincide con el prefijo
+  let found = null;
+  let resto = '';
+  // Ordenar alas por longitud descendente para evitar ambigüedad
+  const alasOrdenadas = [...p.alas].sort((a,b)=>b.nombre.length - a.nombre.length);
+  for(const ala of alasOrdenadas){
+    const prefix = ala.nombre + '-';
+    if(cod.startsWith(prefix)){
+      found = ala;
+      resto = cod.slice(prefix.length);
+      break;
+    }
+    // También sin guión
+    if(cod.startsWith(ala.nombre)){
+      found = ala;
+      resto = cod.slice(ala.nombre.length);
+      break;
+    }
+  }
+
+  if(!found){
+    res.innerHTML = `<span style="color:var(--red)">✗ Código no reconocido — prueba con ${p.alas[0]?.nombre}-101</span>`;
+    return;
+  }
+
+  let info = '';
+  if(esPorPlantas){
+    const planta = parseInt(resto.charAt(0)) || '?';
+    const numHab = resto.slice(1) || '??';
+    const plantaInfo = {1:'61 hab · 101→162',2:'66 hab · 201→266',3:'74 hab · 301→374',4:'74 hab · 401→474'};
+    info = `
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
+        <span class="codigo-chip" style="font-size:14px;padding:6px 14px">${cod}</span>
+        <div>
+          <div>🌿 <strong>Planta:</strong> ${found.nombre} (Planta ${planta})</div>
+          <div>🏨 <strong>Habitación:</strong> Nº ${numHab} de la planta ${planta}</div>
+          <div>📊 <strong>Info planta:</strong> ${plantaInfo[planta]||'—'}</div>
+          <div>🌍 <strong>EN:</strong> ${found.nombre_en||found.nombre} · Floor ${planta} · Room ${numHab}</div>
+        </div>
+      </div>`;
+  } else {
+    const planta = parseInt(resto.charAt(0)) || '?';
+    const numHab = resto.slice(1) || '??';
+    const vistas = {1:'Planta baja',2:'Primera planta',3:'Segunda planta',4:'Tercera planta'};
+    info = `
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
+        <span class="codigo-chip" style="font-size:14px;padding:6px 14px">${cod}</span>
+        <div>
+          <div>🏢 <strong>Ala:</strong> ${found.nombre} · ${found.ubicacion||''}</div>
+          <div>📐 <strong>Planta:</strong> ${planta} (${vistas[planta]||'Planta '+planta})</div>
+          <div>🚪 <strong>Habitación:</strong> Nº ${numHab} del ala ${found.nombre}</div>
+          <div>👁️ <strong>Vista:</strong> ${found.vista||'—'}</div>
+          <div>🌍 <strong>EN:</strong> ${found.nombre_en||found.nombre} Wing · Floor ${planta} · Room ${numHab}</div>
+        </div>
+      </div>`;
+  }
+  res.innerHTML = info;
+}
 
 // Auto-login si hay sesión guardada
 window.addEventListener('load', ()=>{
