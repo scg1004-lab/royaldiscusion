@@ -203,6 +203,32 @@ main{padding:24px;max-width:1400px;margin:0 auto;}
 .chat-send:hover{background:var(--gold);}
 
 /* ── TOAST ── */
+/* ── CARRUSEL PLANOS ── */
+.planos-carousel{position:relative;background:var(--cream);border-bottom:1px solid var(--border);overflow:hidden;}
+.planos-carousel-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);}
+.planos-carousel-header span{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);font-weight:600;}
+.planos-tabs{display:flex;gap:4px;}
+.plano-tab{font-size:8px;letter-spacing:1px;text-transform:uppercase;font-weight:700;padding:4px 10px;border-radius:3px;border:1px solid var(--border-mid);cursor:pointer;background:white;color:var(--text-dim);transition:all 0.15s;font-family:'Montserrat',sans-serif;}
+.plano-tab.active{background:var(--gold-dark);color:white;border-color:var(--gold-dark);}
+.plano-tab:hover:not(.active){background:var(--cream-light);color:var(--text);}
+.planos-img-wrap{position:relative;width:100%;height:280px;overflow:hidden;cursor:zoom-in;}
+.planos-img-wrap img{width:100%;height:100%;object-fit:cover;object-position:top left;transition:opacity 0.2s ease;}
+.planos-img-wrap img.hidden{opacity:0;position:absolute;top:0;left:0;}
+.plano-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.85);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.2);transition:all 0.15s;color:var(--gold-dark);}
+.plano-nav:hover{background:white;box-shadow:0 3px 12px rgba(0,0,0,0.3);}
+.plano-nav.prev{left:8px;}
+.plano-nav.next{right:8px;}
+.plano-zoom-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;flex-direction:column;align-items:center;justify-content:center;}
+.plano-zoom-overlay.open{display:flex;}
+.plano-zoom-overlay img{max-width:95vw;max-height:88vh;object-fit:contain;border-radius:4px;}
+.plano-zoom-close{position:absolute;top:16px;right:20px;background:none;border:none;color:white;font-size:28px;cursor:pointer;opacity:0.8;}
+.plano-zoom-close:hover{opacity:1;}
+.plano-zoom-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.15);border:none;border-radius:50%;width:44px;height:44px;cursor:pointer;font-size:22px;color:white;display:flex;align-items:center;justify-content:center;}
+.plano-zoom-nav:hover{background:rgba(255,255,255,0.25);}
+.plano-zoom-nav.prev{left:16px;}
+.plano-zoom-nav.next{right:16px;}
+.plano-zoom-info{position:absolute;bottom:16px;color:rgba(255,255,255,0.7);font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;}
+
 /* ── EJEMPLOS NOMENCLATURA ── */
 .ejemplos-section{padding:14px 20px;border-bottom:1px solid var(--border);}
 .ejemplos-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;}
@@ -738,6 +764,92 @@ function logout(){
 }
 
 // ── INIT ──────────────────────────────────────────────────
+// ── Configuración GitHub Pages ──────────────────────────────────────────────
+// Cambia esto por tu usuario y repo de GitHub:
+const GITHUB_BASE = 'https://scg1004-lab.github.io/impressive-royal-nomenclatura/planos';
+
+// Mapa de propuesta → código de plano (letra)
+const PROP_LETRA = {
+  // Se detecta automáticamente por el nombre de la propuesta
+};
+
+function getPropLetra(p) {
+  const nom = (p.nombre || '').toUpperCase();
+  if (nom.includes('NÁUTICO') || nom.includes('NAUTICO') || nom.includes('PROPUESTA A')) return 'A';
+  if (nom.includes('CARIBEÑA') || nom.includes('CARIBENA') || nom.includes('PROPUESTA B')) return 'B';
+  if (nom.includes('MIXTA') || nom.includes('PROPUESTA C')) return 'C';
+  if (nom.includes('PLANTAS') || nom.includes('PROPUESTA F')) return 'F';
+  // Fallback por orden
+  const idx = PROPUESTAS_DATA.findIndex(x=>x.id===p.id);
+  return ['A','B','C','D','E','F'][idx] || 'A';
+}
+
+function getPlanoUrl(p, plantaNum) {
+  const letra = getPropLetra(p);
+  return `${GITHUB_BASE}/plano_P${plantaNum}_${letra}.jpg`;
+}
+
+// Estado de cada carrusel
+const currentPlanoTab = {};
+
+function setPlanoTab(propId, num) {
+  currentPlanoTab[propId] = num;
+  // Mostrar imagen correcta
+  for (let n=1; n<=4; n++) {
+    const img = document.getElementById(`plano-img-${propId}-${n}`);
+    if (img) img.classList.toggle('hidden', n !== num);
+  }
+  // Actualizar tabs
+  const tabs = document.querySelectorAll(`#tabs-${propId} .plano-tab`);
+  tabs.forEach((t,i) => t.classList.toggle('active', i+1 === num));
+}
+
+function navPlano(propId, dir) {
+  const cur = currentPlanoTab[propId] || 1;
+  const next = Math.min(4, Math.max(1, cur + dir));
+  setPlanoTab(propId, next);
+}
+
+// Zoom overlay
+let zoomPropId = null;
+
+function openPlanoZoom(propId, plantaNum) {
+  zoomPropId = propId;
+  const p = PROPUESTAS_DATA.find(x=>x.id===propId);
+  if (!p) return;
+  const url = getPlanoUrl(p, plantaNum || 1);
+  document.getElementById('plano-zoom-img').src = url;
+  document.getElementById('plano-zoom-info').textContent =
+    `${p.nombre} · Planta ${plantaNum || 1} · Clic para cerrar`;
+  document.getElementById('plano-zoom-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePlanoZoom() {
+  document.getElementById('plano-zoom-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function navPlanoZoom(dir) {
+  if (!zoomPropId) return;
+  const cur = currentPlanoTab[zoomPropId] || 1;
+  const next = Math.min(4, Math.max(1, cur + dir));
+  setPlanoTab(zoomPropId, next);
+  const p = PROPUESTAS_DATA.find(x=>x.id===zoomPropId);
+  if (p) {
+    document.getElementById('plano-zoom-img').src = getPlanoUrl(p, next);
+    document.getElementById('plano-zoom-info').textContent =
+      `${p.nombre} · Planta ${next} · Clic para cerrar`;
+  }
+}
+
+// Cerrar zoom con Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closePlanoZoom();
+  if (e.key === 'ArrowRight' && zoomPropId) navPlanoZoom(1);
+  if (e.key === 'ArrowLeft'  && zoomPropId) navPlanoZoom(-1);
+});
+
 const ADMIN_ROLES = ['sistemas', 'direccion'];
 
 // Datos reales del edificio importados del Excel
@@ -1033,7 +1145,30 @@ function renderPropuestaCard(p){
       <div class="card-titulo">${p.nombre}</div>
       <div class="card-tema">${p.tema||''}</div>
     </div>
-    <div class="card-alas">${alaChips}</div>
+    <div class="planos-carousel" id="carousel-${p.id}">
+    <div class="planos-carousel-header">
+      <span>🗺️ Planos anotados por planta</span>
+      <div class="planos-tabs" id="tabs-${p.id}">
+        ${[1,2,3,4].map(n=>`<button class="plano-tab ${n===1?'active':''}" onclick="setPlanoTab('${p.id}',${n})"  >P${n}</button>`).join('')}
+      </div>
+    </div>
+    <div class="planos-img-wrap" onclick="openPlanoZoom('${p.id}', currentPlanoTab['${p.id}']||1)">
+      ${[1,2,3,4].map(n=>`
+        <img id="plano-img-${p.id}-${n}"
+          src="${getPlanoUrl(p, n)}"
+          alt="Planta ${n} · ${p.nombre}"
+          class="${n===1?'':'hidden'}"
+          onerror="this.style.display='none';document.getElementById('plano-noimg-${p.id}').style.display='flex'"
+        >`).join('')}
+      <div id="plano-noimg-${p.id}" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--text-dim);">
+        <div style="font-size:32px">🗺️</div>
+        <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;">Sube los planos a GitHub<br><code style="font-size:9px">/planos/plano_P1_A.jpg</code></div>
+      </div>
+      <button class="plano-nav prev" onclick="event.stopPropagation();navPlano('${p.id}',-1)">‹</button>
+      <button class="plano-nav next" onclick="event.stopPropagation();navPlano('${p.id}',1)">›</button>
+    </div>
+  </div>
+  <div class="card-alas">${alaChips}</div>
   <div class="ejemplos-section">
     <div style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Ejemplos de código</div>
     <div class="ejemplos-chips">${generarEjemplosChips(p)}</div>
@@ -1512,5 +1647,14 @@ window.addEventListener('load', ()=>{
   }
 });
 </script>
+<!-- ZOOM OVERLAY PLANOS -->
+<div class="plano-zoom-overlay" id="plano-zoom-overlay" onclick="closePlanoZoom()">
+  <button class="plano-zoom-close" onclick="closePlanoZoom()">✕</button>
+  <button class="plano-zoom-nav prev" onclick="event.stopPropagation();navPlanoZoom(-1)">‹</button>
+  <img id="plano-zoom-img" src="" alt="Plano ampliado">
+  <button class="plano-zoom-nav next" onclick="event.stopPropagation();navPlanoZoom(1)">›</button>
+  <div class="plano-zoom-info" id="plano-zoom-info"></div>
+</div>
+
 </body>
 </html>
